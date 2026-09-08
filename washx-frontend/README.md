@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WashX Frontend 🧺✨
 
-## Getting Started
+The client web application for **WashX** — Next-generation On-Demand Laundry & Garment Care Platform.
 
-First, run the development server:
+Built with **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS v4**, and **Socket.io Client**.
 
+> 📖 **Full System Documentation**: Please refer to the root [README.md](../README.md) for architecture, API routes, database schemas, and end-to-end system design.
+
+---
+
+## Features Implemented
+- **Landing Page**: Interactive hero, process step-by-step walkthrough, garment specimen registry, live price estimator, and city coverage ticker.
+- **Customer Booking Flow**: Multi-step booking wizard (`/book`), category and garment item selection with real-time price totals (`/orders/[id]/clothes`), and delivery slot scheduling (`/orders/[id]/delivery`).
+- **Live Order Tracking**: Real-time order progress timeline with WebSocket sync (`/orders/[id]`).
+- **Subscriptions**: Membership plan selection (`/subscription`) with Fair Usage Policy (FUP) status tracking.
+- **Logistics Agent Portal**: Responsive agent workspace (`/agent/dashboard`) for claiming pickups and deliveries, and submitting delivery OTPs.
+- **Admin Command Center**: Visual drag-and-drop Kanban board (`/admin/kanban`), orders table (`/admin/orders`), agent management (`/admin/agents`), coupons studio (`/admin/coupons`), and business analytics (`/admin/analytics`).
+- **Payments**: Razorpay modal checkout integration.
+- **Push Notifications**: Firebase Cloud Messaging background service worker.
+- **Dark/Light Mode**: Full theme customization with system preference detection.
+
+---
+
+## Local Development
+
+### 1. Install dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configure Environment Variables
+Copy `.env.example` to `.env.local`:
+```bash
+cp .env.example .env.local
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Ensure `NEXT_PUBLIC_API_URL` points to your backend:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_SOCKET_URL=http://localhost:5000
+NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_test_YOUR_KEY_ID
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 3. Run Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
