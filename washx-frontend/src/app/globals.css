@@ -1,0 +1,363 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@500;600;700;800&display=swap');
+@import "tailwindcss";
+
+:root, [data-theme="dark"] {
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+
+  /* Theme semantic variables (Dark) */
+  --bg-primary: #060608;
+  --bg-surface: #0d0d12;
+  --bg-surface-elevated: #13141b;
+  --bg-card: rgba(15, 16, 24, 0.78);
+  --bg-card-hover: rgba(22, 24, 36, 0.9);
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-card: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(99, 102, 241, 0.45);
+  --border-highlight: rgba(255, 255, 255, 0.16);
+
+  --text-primary: #ffffff;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-dim: #334155;
+
+  --nav-bg: rgba(6, 6, 8, 0.85);
+  --nav-border: rgba(255, 255, 255, 0.08);
+
+  --pill-body-bg: #ffffff;
+  --pill-body-text: #060608;
+  --pill-body-hover: #f1f5f9;
+
+  --btn-outline-bg: rgba(255, 255, 255, 0.03);
+  --btn-outline-text: #e2e8f0;
+
+  --input-bg: rgba(15, 16, 24, 0.85);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --input-text: #ffffff;
+  --input-placeholder: #64748b;
+
+  --tag-bg: rgba(255, 255, 255, 0.04);
+  --tag-text: #cbd5e1;
+
+  --toggle-bg: rgba(255, 255, 255, 0.08);
+
+  --card-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  --card-shadow-hover: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.15);
+  --card-inner-bevel: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+
+  /* Vivid Accents */
+  --accent-primary: #6366f1;
+  --accent-cyan: #06b6d4;
+  --accent-blue: #3b82f6;
+  --accent-emerald: #10b981;
+}
+
+[data-theme="light"] {
+  /* Theme semantic variables (Light) */
+  --bg-primary: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #f1f5f9;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-card-hover: #ffffff;
+
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-card: rgba(226, 232, 240, 0.95);
+  --border-hover: rgba(99, 102, 241, 0.5);
+  --border-highlight: rgba(0, 0, 0, 0.1);
+
+  --text-primary: #090d16;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+
+  --nav-bg: rgba(248, 250, 252, 0.92);
+  --nav-border: rgba(0, 0, 0, 0.07);
+
+  --pill-body-bg: #090d16;
+  --pill-body-text: #ffffff;
+  --pill-body-hover: #1e293b;
+
+  --btn-outline-bg: rgba(0, 0, 0, 0.03);
+  --btn-outline-text: #1e293b;
+
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --input-text: #0f172a;
+  --input-placeholder: #94a3b8;
+
+  --tag-bg: rgba(0, 0, 0, 0.04);
+  --tag-text: #334155;
+
+  --toggle-bg: rgba(0, 0, 0, 0.06);
+
+  --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --card-shadow-hover: 0 20px 40px -10px rgba(99, 102, 241, 0.12), 0 0 0 1px rgba(99, 102, 241, 0.2);
+  --card-inner-bevel: inset 0 1px 0 0 rgba(255, 255, 255, 0.8);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+/* Background Cyber Mesh Glows */
+.mesh-glow-blue {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, rgba(6, 182, 212, 0.06) 45%, transparent 70%);
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mesh-glow-cyan {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, transparent 65%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Signature Pill Button with Arrow Disc (Inspired by Solare's high-end UI action pattern) */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.btn-pill__body {
+  background: var(--pill-body-bg);
+  color: var(--pill-body-text);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  height: 48px;
+  padding: 0 24px 0 22px;
+  border-radius: 999px 0 0 999px;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.btn-pill__disc {
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -4px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 24px rgba(99, 102, 241, 0.4);
+}
+
+.btn-pill:hover .btn-pill__body {
+  background: var(--pill-body-hover);
+  padding-right: 28px;
+}
+
+.btn-pill:hover .btn-pill__disc {
+  transform: translateX(4px);
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.6);
+}
+
+/* Secondary Action Button */
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--btn-outline-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--btn-outline-text);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(12px);
+  text-decoration: none;
+}
+
+.btn-outline:hover {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.5);
+  color: var(--accent-primary);
+  transform: translateY(-1px);
+}
+
+/* Luxury Card with Specular Highlight */
+.washx-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-card);
+  border-radius: 22px;
+  box-shadow: var(--card-shadow), var(--card-inner-bevel);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.washx-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* Minimalist Micro-Tag */
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: var(--tag-bg);
+  border: 1px solid var(--border-subtle);
+  color: var(--tag-text);
+}
+
+.tag-pill-active {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: #6366f1;
+}
+
+[data-theme="light"] .tag-pill-active {
+  background: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.3);
+  color: #4f46e5;
+}
+
+[data-theme="light"] .mesh-glow-blue {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.09) 0%, rgba(6, 182, 212, 0.04) 45%, transparent 70%);
+}
+
+[data-theme="light"] .mesh-glow-cyan {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.07) 0%, transparent 65%);
+}
+
+[data-theme="light"] .glass {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.06);
+  color: #0f172a;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-track { background: #f1f5f9; }
+[data-theme="light"] ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* Underline link with smooth transition */
+.link-hover {
+  position: relative;
+  display: inline-block;
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.link-hover:hover {
+  color: #ffffff;
+}
+
+.link-hover::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: #6366f1;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.link-hover:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Infinite Marquee */
+@keyframes ticker {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-ticker {
+  display: flex;
+  width: max-content;
+  animation: ticker 35s linear infinite;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
+
+/* Input Fields */
+.input-field {
+  background: rgba(15, 16, 24, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 13px 18px;
+  color: #ffffff;
+  font-size: 15px;
+  font-family: var(--font-body);
+  width: 100%;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.input-field:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  background: rgba(20, 22, 32, 0.95);
+}
+
+.input-field::placeholder {
+  color: #475569;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #060608; }
+::-webkit-scrollbar-thumb { background: #1e202e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #33374e; }

@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "env": {
+    "NEXT_PUBLIC_API_URL": "@washx_api_url",
+    "NEXT_PUBLIC_RAZORPAY_KEY_ID": "@washx_razorpay_key_id",
+    "NEXT_PUBLIC_SOCKET_URL": "@washx_socket_url"
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+      ]
+    }
+  ]
+}

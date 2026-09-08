@@ -1,0 +1,239 @@
+// WashX Prisma Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String        @id @default(uuid())
+  name           String
+  email          String        @unique
+  phone          String
+  passwordHash   String
+  address        String?
+  city           String?
+  pincode        String?
+  lat            Float?
+  lng            Float?
+  fcmToken       String?
+  referralCode   String?       @unique
+  walletBalance  Float         @default(0)
+  orders         Order[]
+  subscription   Subscription?
+  referralsGiven Referral[]    @relation("referrer")
+  referralUsed   Referral?     @relation("referee")
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Order {
+  id                  String        @id @default(cuid())
+  userId              String
+  user                User          @relation(fields: [userId], references: [id])
+  status              OrderStatus   @default(PENDING)
+  clothesItems        ClothesItem[]
+  totalPrice          Float         @default(0)
+  garmentsTotal       Float         @default(0)
+  deliveryFee         Float         @default(0)
+  isExpress           Boolean       @default(false)
+  turnaroundDays      Int           @default(3)
+  deliveryPreference  String?       @default("HANDOVER_PERSON") // "HANDOVER_PERSON" | "SECURITY_GATE"
+  deliveryOtp         String?
+  inspectionVerified  Boolean       @default(false)
+  inspectionNotes     String?
+  pickupSlot          DateTime?
+  pickupAddress       String?
+  deliverySlot        DateTime?
+  deliveryAddress     String?
+  city                String?
+  pickupAgentId       String?
+  deliveryAgentId     String?
+  specialNotes        String?
+  cancellationReason  String?
+  payment             Payment?
+  rating              Int?
+  review              String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+}
+
+model ClothesItem {
+  id           String   @id @default(uuid())
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id])
+  category     String   // "mens" | "womens_saree" | "womens_other"
+  type         String   // "shirt", "pant", "saree", "kurta", "blanket", etc.
+  quantity     Int
+  service      String   // "wash" | "wash_iron" | "dry_clean"
+  pricePerUnit Float
+  totalPrice   Float
+}
+
+enum OrderStatus {
+  PENDING
+  PICKUP_SCHEDULED
+  PICKUP_MISSED
+  PICKED_UP
+  IN_WASHING
+  WASHING_DONE
+  DELIVERY_SCHEDULED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+model Agent {
+  id                 String    @id @default(uuid())
+  name               String
+  phone              String
+  email              String    @unique
+  role               AgentRole
+  city               String
+  isActive           Boolean   @default(true)
+  lat                Float?
+  lng                Float?
+  fcmToken           String?
+  password           String
+  dailyOrdersClaimed Int       @default(0)
+  dailyResetDate     DateTime  @default(now())
+  createdAt          DateTime  @default(now())
+}
+
+enum AgentRole {
+  PICKUP
+  DELIVERY
+  BOTH
+}
+
+model Payment {
+  id                String        @id @default(uuid())
+  orderId           String?       @unique
+  subscriptionId    String?       @unique
+  order             Order?        @relation(fields: [orderId], references: [id])
+  subscription      Subscription? @relation(fields: [subscriptionId], references: [id])
+  amount            Float
+  type              PaymentType   @default(ORDER)
+  status            PaymentStatus @default(PENDING)
+  method            String?
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  razorpaySignature String?
+  refundId          String?
+  refundAmount      Float?
+  refundReason      String?
+  paidAt            DateTime?
+  refundedAt        DateTime?
+  createdAt         DateTime      @default(now())
+}
+
+enum PaymentType {
+  ORDER
+  SUBSCRIPTION
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model City {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  state     String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Subscription {
+  id             String             @id @default(uuid())
+  userId         String             @unique
+  user           User               @relation(fields: [userId], references: [id])
+  plan           SubscriptionPlan
+  status         SubscriptionStatus @default(ACTIVE)
+  startDate      DateTime           @default(now())
+  endDate        DateTime
+  amountPaid     Float
+  fupMaxPickups  Int                @default(8)
+  fupMaxItems    Int                @default(80)
+  fupUsedPickups Int                @default(0)
+  fupUsedItems   Int                @default(0)
+  payment        Payment?
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+}
+
+// Admin user model — replaces static key auth
+model AdminUser {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  role         AdminRole @default(VIEWER)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+enum AdminRole {
+  SUPER
+  VIEWER
+}
+
+// JWT blacklist for logout and password-change invalidation
+model TokenBlacklist {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([expiresAt])
+}
+
+enum SubscriptionPlan {
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+// Promo / coupon codes
+model Coupon {
+  id        String    @id @default(uuid())
+  code      String    @unique
+  type      String    // PERCENT | FLAT
+  value     Float
+  minOrder  Float     @default(0)
+  maxUses   Int?
+  usedCount Int       @default(0)
+  isActive  Boolean   @default(true)
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([code])
+}
+
+// Referral program
+model Referral {
+  id           String   @id @default(uuid())
+  referrerId   String
+  refereeId    String   @unique
+  status       String   @default("PENDING") // PENDING | CREDITED
+  rewardGiven  Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  referrer     User     @relation("referrer", fields: [referrerId], references: [id])
+  referee      User     @relation("referee",  fields: [refereeId],  references: [id])
+
+  @@index([referrerId])
+}
